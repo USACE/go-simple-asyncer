@@ -1,8 +1,6 @@
 package asyncer
 
 import (
-	"fmt"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
@@ -58,7 +56,6 @@ func (a SQSAsyncer) CallAsync(payload []byte) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(queueURL)
 	params := &sqs.SendMessageInput{
 		MessageBody: aws.String(string(payload)), // Required
 		QueueUrl:    queueURL,                    // Required
