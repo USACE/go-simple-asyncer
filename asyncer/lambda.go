@@ -9,7 +9,9 @@ import (
 )
 
 // LambdaAsyncer implements the Asyncer Interface for AWS Lambda
-type LambdaAsyncer struct{}
+type LambdaAsyncer struct {
+	FunctionName string
+}
 
 // Name returns name of Asyncer
 func (a LambdaAsyncer) Name() string {
@@ -17,12 +19,12 @@ func (a LambdaAsyncer) Name() string {
 }
 
 // CallAsync implements Asyncer interface for AWS Lambda
-func (a LambdaAsyncer) CallAsync(functionName string, payload []byte) error {
+func (a LambdaAsyncer) CallAsync(payload []byte) error {
 
 	log.Printf(
 		"ASYNC ENV: %s; FUNCTION: %s;PAYLOAD: %s",
 		a.Name(),
-		functionName,
+		a.FunctionName,
 		payload,
 	)
 
@@ -36,7 +38,7 @@ func (a LambdaAsyncer) CallAsync(functionName string, payload []byte) error {
 
 	output, err := client.Invoke(
 		&lambda.InvokeInput{
-			FunctionName:   aws.String(functionName),
+			FunctionName:   aws.String(a.FunctionName),
 			InvocationType: aws.String("Event"),
 			Payload:        payload,
 		},

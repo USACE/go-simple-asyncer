@@ -7,7 +7,7 @@ Nothing fancy, a simple library with a goal of being able to switch between Asyn
 ```
 // myAsyncer creates a new asyncer
 myAsyncer, err := asyncer.NewAsyncer(
-    asyncer.Config{Engine: "AWSSNS", Topic: "my-sns-topic"},
+    asyncer.Config{Engine: "AWSSNS", Target: "my-sns-topic"},
 )
 // Use myAsyncer
 if err := ae.CallAsync("corpsmap-cumulus-packager", payload); err != nil {
@@ -20,3 +20,7 @@ Note: It's helpful to pair this library with something like https://github.com/k
 ### Amazon Web Services SNS Asyncer
 
 ### Amazon Web Services SQS Asyncer (In Progress...)
+
+If only a queue name is provided as `Target`, for example `myqueue1`, it is assumed that this is running on Amazon Web Services against SQS. Environment variables provided at runtime, such as "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_REGION" will be necessary to correctly build appropriate SQS service URLs.
+
+Prefixing `Target` with `local/` and providing an absolute URL (i.e. `Target: local/http://localhost:9324/queue/queue1` allows use of a SQS-api compliant message queue such as ElasticMQ or LocalStack.

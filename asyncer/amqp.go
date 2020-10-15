@@ -21,12 +21,11 @@ func (a AMQPAsyncer) Name() string {
 }
 
 // CallAsync implements Asyncer interface for AWS Lambda
-func (a AMQPAsyncer) CallAsync(functionName string, payload []byte) error {
+func (a AMQPAsyncer) CallAsync(payload []byte) error {
 
 	log.Printf(
-		"ASYNC ENV: %s; FUNCTION: %s;PAYLOAD: %s",
+		"ASYNC ENV: %s; PAYLOAD: %s",
 		a.Name(),
-		functionName,
 		payload,
 	)
 
