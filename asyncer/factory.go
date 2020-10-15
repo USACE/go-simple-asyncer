@@ -5,6 +5,7 @@ import "errors"
 // Config holds configuration information to build an Asyncer
 type Config struct {
 	Engine string
+	Target string
 	Topic  string
 }
 
@@ -15,6 +16,8 @@ func NewAsyncer(cfg Config) (Asyncer, error) {
 		return AMQPAsyncer{}, nil
 	case "AWSLAMBDA":
 		return LambdaAsyncer{}, nil
+	case "AWSSQS":
+		return SQSAsyncer{}, nil
 	case "AWSSNS":
 		if cfg.Topic == "" {
 			return nil, errors.New(
