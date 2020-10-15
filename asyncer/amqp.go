@@ -24,7 +24,7 @@ func (a AMQPAsyncer) Name() string {
 func (a AMQPAsyncer) CallAsync(payload []byte) error {
 
 	log.Printf(
-		"ASYNC ENV: %s; FUNCTION: %s;PAYLOAD: %s",
+		"ASYNC ENV: %s; PAYLOAD: %s",
 		a.Name(),
 		payload,
 	)

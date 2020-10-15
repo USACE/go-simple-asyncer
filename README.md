@@ -23,4 +23,4 @@ Note: It's helpful to pair this library with something like https://github.com/k
 
 If only a queue name is provided as `Target`, for example `myqueue1`, it is assumed that this is running on Amazon Web Services against SQS. Environment variables provided at runtime, such as "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_REGION" will be necessary to correctly build appropriate SQS service URLs.
 
-Prefixing `Target` with `local/` and providing an absolute URL (i.e. `Target: local/http://localhost:9324/queues/queue1` allows use of a SQS-api compliant message queue such as ElasticMQ or LocalStack.
+Prefixing `Target` with `local/` and providing an absolute URL (i.e. `Target: local/http://localhost:9324/queue/queue1` allows use of a SQS-api compliant message queue such as ElasticMQ or LocalStack.
