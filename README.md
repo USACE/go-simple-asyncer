@@ -7,7 +7,7 @@ Nothing fancy, a simple library with a goal of being able to switch between Asyn
 ```
 // myAsyncer creates a new asyncer
 myAsyncer, err := asyncer.NewAsyncer(
-    asyncer.Config{Engine: "AWSSNS", Topic: "my-sns-topic"},
+    asyncer.Config{Engine: "AWSSNS", Target: "my-sns-topic"},
 )
 // Use myAsyncer
 if err := ae.CallAsync("corpsmap-cumulus-packager", payload); err != nil {

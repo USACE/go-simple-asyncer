@@ -6,7 +6,6 @@ import "errors"
 type Config struct {
 	Engine string
 	Target string
-	Topic  string
 }
 
 // NewAsyncer returns a concrete asyncer
@@ -19,12 +18,12 @@ func NewAsyncer(cfg Config) (Asyncer, error) {
 	case "AWSSQS":
 		return SQSAsyncer{}, nil
 	case "AWSSNS":
-		if cfg.Topic == "" {
+		if cfg.Target == "" {
 			return nil, errors.New(
-				"Engine 'AWSSNS' requires a topic",
+				"Engine 'AWSSNS' requires a target (SNS Topic)",
 			)
 		}
-		return SNSAsyncer{Topic: cfg.Topic}, nil
+		return SNSAsyncer{Topic: cfg.Target}, nil
 	default:
 		return MockAsyncer{}, nil
 	}
