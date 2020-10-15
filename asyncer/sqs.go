@@ -8,42 +8,59 @@ import (
 
 // SQSAsyncer implements the Asyncer Interface for SNS Messages
 type SQSAsyncer struct {
+	Local     bool
+	Endpoint  string
+	QueueURL  string
+	QueueName string
 }
 
 // Name returns name of Asyncer
 func (a SQSAsyncer) Name() string {
-	return "AWS SQS"
+	return "AWSSQS"
 }
 
-// CallAsync implements Asyncer interface for AWS Lambda
-// target should be
-func (a SQSAsyncer) CallAsync(target string, payload []byte) error {
-
-	// Initialize a session that the SDK will use to load
-	// credentials from the shared credentials file. (~/.aws/credentials).
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
+func (a SQSAsyncer) getSQS() *sqs.SQS {
+	if a.Local {
+		return sqs.New(
+			session.New(),
+			&aws.Config{
+				Endpoint: aws.String(a.Endpoint),
+				Region:   aws.String("local"),
+			},
+		)
+	}
+	return sqs.New(session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
-	}))
+	})))
+}
 
-	svc := sqs.New(sess)
+func (a SQSAsyncer) getQueueURL(svc *sqs.SQS) (*string, error) {
+	if a.Local {
+		return &a.QueueURL, nil
+	}
+	// Build Queue URL using AWS Credential Information
+	result, err := svc.GetQueueUrl(&sqs.GetQueueUrlInput{
+		QueueName: &a.QueueName,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.QueueUrl, nil
+}
 
-	result, err := svc.GetQueueUrl(
-		&sqs.GetQueueUrlInput{
-			QueueName: &target,
-		},
-	)
+func (a SQSAsyncer) CallAsync(payload []byte) error {
+
+	svc := a.getSQS()
+	queueURL, err := a.getQueueURL(svc)
 	if err != nil {
 		return err
 	}
-
 	params := &sqs.SendMessageInput{
 		MessageBody: aws.String(string(payload)), // Required
-		QueueUrl:    result.QueueUrl,             // Required
+		QueueUrl:    queueURL,                    // Required
 	}
-
 	if _, err := svc.SendMessage(params); err != nil {
 		return err
 	}
-
 	return nil
 }

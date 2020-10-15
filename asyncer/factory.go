@@ -1,6 +1,12 @@
 package asyncer
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"net/url"
+	"path"
+	"strings"
+)
 
 // Config holds configuration information to build an Asyncer
 type Config struct {
@@ -16,7 +22,20 @@ func NewAsyncer(cfg Config) (Asyncer, error) {
 	case "AWSLAMBDA":
 		return LambdaAsyncer{}, nil
 	case "AWSSQS":
-		return SQSAsyncer{}, nil
+		if strings.ToUpper(cfg.Target[:6]) == "LOCAL/" {
+			url, err := url.Parse(cfg.Target[6:])
+			if err != nil {
+				return nil, err
+			}
+			_, queueName := path.Split(url.Path)
+			return SQSAsyncer{
+				Local:     true,
+				Endpoint:  fmt.Sprintf("%s://%s", url.Scheme, url.Host),
+				QueueName: queueName,
+				QueueURL:  cfg.Target[6:],
+			}, nil
+		}
+		return SQSAsyncer{Local: false, QueueName: cfg.Target}, nil
 	case "AWSSNS":
 		if cfg.Target == "" {
 			return nil, errors.New(

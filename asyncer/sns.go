@@ -20,7 +20,7 @@ func (a SNSAsyncer) Name() string {
 }
 
 // CallAsync implements Asyncer interface for AWS Lambda
-func (a SNSAsyncer) CallAsync(functionName string, payload []byte) error {
+func (a SNSAsyncer) CallAsync(payload []byte) error {
 
 	topic := a.Topic
 
