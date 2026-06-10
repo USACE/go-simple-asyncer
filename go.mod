@@ -1,4 +1,4 @@
-module github.com/USACE/go-simple-asyncer
+module github.com/usace/go-simple-asyncer
 
 go 1.15
 
